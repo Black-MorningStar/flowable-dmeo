@@ -51,4 +51,14 @@ public class ProcessController {
     public void taskList() {
         List<Task> tasks = processService.queryTaskList();
     }
+
+    @PostMapping("/completeTask")
+    public void completeTask() {
+        processService.completeTask();
+    }
+
+    @PostMapping("/getHistoryData")
+    public void getHistoryData() {
+        processService.getHistoryData();
+    }
 }

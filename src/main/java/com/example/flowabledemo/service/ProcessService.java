@@ -3,6 +3,7 @@ package com.example.flowabledemo.service;
 import liquibase.pro.packaged.S;
 import org.flowable.engine.ProcessEngine;
 import org.flowable.engine.RepositoryService;
+import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.ProcessInstance;
@@ -10,6 +11,7 @@ import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -72,5 +74,32 @@ public class ProcessService {
             System.out.println("employee:"+variables.get("employee")+" nrOfHolidays:"+variables.get("nrOfHolidays"));
         }
         return taskList;
+    }
+
+    /**
+     * 完成task
+     */
+    public void completeTask() {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("approved",true);
+        processEngine.getTaskService().complete("5012",map);
+    }
+
+    /**
+     * 获取历史流转数据
+     */
+    public void getHistoryData() {
+        List<HistoricActivityInstance> list = processEngine.getHistoryService().createHistoricActivityInstanceQuery()
+                .processInstanceId("5004")
+                .finished()
+                .orderByHistoricActivityInstanceEndTime()
+                .asc().list();
+        for (HistoricActivityInstance activity : list) {
+            System.out.println("结果分割线=======================");
+            System.out.println("结果分割线=======================");
+            System.out.println("结果分割线=======================");
+            System.out.println(activity.getActivityId() + " took "
+                    + activity.getDurationInMillis() + " milliseconds");
+        }
     }
 }
